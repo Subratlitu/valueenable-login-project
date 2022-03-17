@@ -2,6 +2,7 @@ const { query } = require("express");
 const authorModel = require("../models/authorModel");
 const blogModel = require("../models/blogModel");
 
+
 const createBlog = async (req, res) => {
   try {
     if (Object.keys(req.body).length != 0) {
@@ -25,9 +26,7 @@ const getBlogs = async (req, res) => {
   try {
     
     let blogs = await blogModel.find(req.query);
-    if(!blogs){
-        return res.status(404).send({status:false, msg:"No Blog Found"});
-    }
+    
     res.status(201).send({ status: true, data: blogs });
   } catch (error) {
     return res.status(500).json({ status: false, error: error.message });
@@ -40,7 +39,7 @@ const updateBlog = async (req, res) => {
     const blogId = req.params.blogId;
     const data = req.body;
     if(Object.keys(data).length == 0){
-        return res.status(400).send({status:false, msg:"Invalid Request!"});
+        return res.status(400).send({status:false, msg:"Invalid Request"})
     }
     const deleteTrue = await blogModel.findById(blogId);
     if (deleteTrue.isDeleted) {
@@ -86,7 +85,8 @@ const deleteByQuery = async (req, res) => {
         for(let i=0; i<blogs.length; i++){
             blogs[i].isDeleted = true;
         }
-        let changeBlog =  blogModel.updateMany(blogs,{isDeleted: true, new:true});
+        blogs.save()
+        //let changeBlog =  blogModel.updateMany(blogs,{isDeleted: true, new:true});
         
         res.status(200).json({status:true, msg:"Deleted Successfully!", data:blogs});
         
@@ -95,10 +95,12 @@ const deleteByQuery = async (req, res) => {
     }
 }
 
+
 module.exports = {
   createBlog,
   getBlogs,
   updateBlog,
   deleteById,
   deleteByQuery,
+  
 };
