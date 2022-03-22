@@ -72,22 +72,7 @@ const getInterns=async function(req,res){
             logoLink:result[0].logoLink,
             interests:interns
         }
-        // const collegeDetails=await collegeModel.findOne(collegeName)
-        // //console.log(collegeDetails)
-        // const collegeId=collegeDetails._id
-        // //console.log(collegeId)
-        // const allInterns=await internModel.find(collegeId).select({name:1,email:1,mobile:1})
-        // console.log(allInterns)
-        // const reqCollege=await collegeModel.findOne(collegeName).select({_id:0,name:1,fullName:1,logoLink:1})
-        // //console.log(reqCollege)
         
-        
-        //const ansArr=reqCollege.map(v => ({...v,intrests:allInterns}))
-        //res.status(201).send({status:true,message:"success",data:ansArr})
-        //Object.assign(reqCollege, {intersts:allInterns});
-        //console.log(reqCollege)
-        // var pair={intrest:allInterns}
-        // reqCollege = {...reqCollege, ...pair};
         res.status(201).send({status:true,message:"success",data:obj})
         
 
