@@ -28,7 +28,7 @@ const internModel=new mongoose.Schema(
                 type: String,
                 unique:true,
                 required:"mobile is required",
-               // match: /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/,
+                match: /^([+]\d{2})?\d{10}$/
         },
         collegeId:{
             type:objectId,

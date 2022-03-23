@@ -21,6 +21,7 @@ const createCollege= async function(req,res){
             res.status(400).send({status:false,message:'name is missing!'})
             return
         }
+        
         if(!isValid(fullName)){
             res.status(400).send({status:false,message:'full name is missing!'})
             return
@@ -31,6 +32,9 @@ const createCollege= async function(req,res){
         }
         //validation end
         const collegeData={name,fullName,logoLink}
+        let duplicateName= await collegeModel.findOne({name:name})
+        if(duplicateName){ return res.status(400).send({status: false, msg: "Can't create new college. College name already exist"})}
+
         const newCollege=await collegeModel.create(collegeData)
         res.status(201).send({status:true,message:"college created succesfully",data:newCollege})
 

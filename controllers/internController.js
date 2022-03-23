@@ -12,6 +12,11 @@ const isValidRequestBody=function(requestBody){
 const isValidObjectId=function(ObjectId){
     return mongoose.Types.ObjectId.isValid(ObjectId)
   }
+const isRightFormatmobile = function (mobile) {
+    return /^([+]\d{2})?\d{10}$/.test(mobile);
+}
+
+
 const createIntern=async function(req,res){
     try{
         const requestBody=req.body
@@ -32,6 +37,11 @@ const createIntern=async function(req,res){
             res.status(400).send({status:false,message:'mobile number is missing!'})
             return
         }
+        if (!isRightFormatmobile(mobile)) { return res.status(400).send({ status: false, msg: "Please enter a valid mobile number" }) }
+
+        let duplicateMobile= await internModel.findOne({mobile:mobile})
+        if(duplicateMobile){ return res.status(400).send({status: false, msg: "Mobile number already exist"})}
+    
         if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
             res.status(400).send({status:false,message:'email is not valid'})
             return
@@ -50,6 +60,8 @@ const createIntern=async function(req,res){
         }
         //validation end
         const internData={name,email,mobile,collegeId}
+        const isMatch= await collegeModel.findById(collegeId)
+        if(!isMatch){return res.status(400).send({status:false, msg:"please enter a valid college id"})}
         const newIntern=await internModel.create(internData)
         res.status(201).send({status:true,message:"intern created succesfully",data:newIntern})
     }catch (error) {
@@ -63,6 +75,8 @@ const getInterns=async function(req,res){
     try{
         let cName=req.query.name
         if(!cName){return res.status(400).send({status:false,message:"college name is required"})}
+        let validCollege=await collegeModel.findOne({name:cName})
+        if(!validCollege){return res.status(400).send({status:false,message:"college is not exits"})}
         let cId= await collegeModel.find({name:cName}).select({_id:1})
         let interns=await internModel.find({collegeId:cId}).select({name:1,email:1,mobile:1})
         let result=await collegeModel.find({name:cName}).select({_id:0,name:1,fullName:1,logoLink:1})
