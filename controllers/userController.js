@@ -25,7 +25,7 @@ const registerUser=async function(req,res){
     try{
         const requestBody=req.body
         if(!isValidRequestBody(requestBody)){
-            res.status(400).send({status:false,message:"invalid reqquest parameter.please provide intern details"})
+            res.status(400).send({status:false,message:"invalid reqquest parameter.please provide user details"})
             return
         }
         const{title,name,phone,email,password,address} = requestBody;
@@ -69,7 +69,7 @@ const registerUser=async function(req,res){
             return
         }
         if(!isValidPassword(password)){
-            res.status(400).send({status:false,message:"your password is not valid"})
+            res.status(400).send({status:false,message:"your password is not valid. please give a length in 8-15 "})
             return
         }
 
@@ -141,7 +141,7 @@ const userLogIn = async(req,res)=>{
         userId: user._id,
         iat:Math.floor(Date.now()/1000),
         exp:Math.floor(Date.now()/1000)+10*60*60
-     },"functionup-project");
+     },"book-management-project");
     res.setHeader('x-api-key',token);
     res.status(200).json({status:true,message:"user login succesfully", data:token});
     } catch (error) {
