@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "author": "ishvinder singh",
+  "author": "Subrat kumar Nayak",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.2",

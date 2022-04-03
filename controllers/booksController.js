@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const mongoose=require('mongoose')
 const reviewModel = require("../models/reviewModel");
 const moment=require('moment')
-
+var ObjectId = require("mongoose").Types.ObjectId;
 
 const isValid=function(value){
     if(typeof value ==='undefined' || value===null)return false
@@ -15,9 +15,21 @@ const isValid=function(value){
 const isValidRequestBody=function(requestBody){
     return Object.keys(requestBody).length>0
 }
-const isValidObjectId=function(ObjectId){
-    return mongoose.Types.ObjectId.isValid(ObjectId)
-  }
+const isValidObjectId= function (a){
+    if((ObjectId.isValid(a)))//checking for 12 bytes id in input value 
+    {  
+        let b =  (String)(new ObjectId(a))//converting input value in valid object Id
+        
+        if(b == a) //comparing converted object Id with input value
+        {       
+            return true;
+        }else{
+                return false;
+            }
+    }else{
+        return false;
+    }
+}
 const createBooks=async function(req,res){
     try{
         const requestBody=req.body
@@ -123,7 +135,7 @@ const getBooks = async (req, res) => {
     if(filterQuery){
         const books=await booksModel.find(filterQuery).select({_id:1,title:1,excerpt:1,userId:1,category:1,releasedAt:1,reviews:1}).sort({title:1})
       if(Array.isArray(books) && books.length===0){
-        res.status(400).send({status:false,message:'no books found'})
+        res.status(404).send({status:false,message:'no books found'})
         return
       }
       res.status(201).send({status:true,message:'Books list',data:books})
@@ -156,7 +168,12 @@ const getBooksWithReview=async function(req,res){
         }
         //collecting book details
         let bookData=await booksModel.find({_id:bookId})
-        if(!bookData){return res.status(400).send({status:false,message:"book is not exist"})}
+        console.log(bookId)
+        console.log(bookData)
+        if(bookData==[]){
+            res.status(404).send({status:false,message:"no such book exit with this book id"})
+            return
+        }
         //collectiing all reviews
         let result=await reviewModel.find({bookId:bookId})
         //creating a new object and adding required key value pairs to it
@@ -209,18 +226,6 @@ try{
     for(let i=0; i<keys.length; i++){
         if(!(details[keys[i]])) return res.status(400).send({status:false, message:"Please provide proper details to update."})
     }
-    //if user want to change the owner of the book
-    // keys=Object.keys(details);
-    // if(keys.includes("userId")){
-    //     let userId = details.userId
-    //     if(!isValidObjectId(userId)){
-    //         res.status(400).send({status:false,message:"this is not a valid user id"})
-    //         return
-    //     }
-    //     let user = await userModel.findOne({_id:userId});
-    //     if(!user) return res.status(404).send({status: false, message: "user does not exist in our database."})
-    // }
-
     
     //user cannot delete a book while updating it
     if(details.isDeleted==true)  return res.status(400).send({status:false, message:'You cannot delete book while updating'})
@@ -275,7 +280,7 @@ const deleteBookByBookId=async function(req,res){
         res.status(400).send({status:false,message:"this is not a valid object id"})
         return
     }
-    let book=await booksModel.findOneAndUpdate({_id:bookId,isDeleted:false,deletedAt:null},{isDeleted:true,deletedAt:Date.now()},{new:true})
+    let book=await booksModel.findOneAndUpdate({_id:bookId,isDeleted:false},{isDeleted:true,deletedAt:Date.now()},{new:true})
     if(!book) return res.status(404).send({status:false, message:"No such book exists"})
     return res.status(200).send({status:true, message:'Successfully deleted', data:book})
     }
