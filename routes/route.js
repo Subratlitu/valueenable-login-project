@@ -4,6 +4,7 @@ const router = express.Router();
 const userController=require('../controllers/userController');
 const booksController=require('../controllers/booksController');
 const reviewController=require('../controllers/reviewController');
+const uploadFileController=require('../controllers/uploadFileController')
 const middleware=require('../middlewares/auth')
 
 
@@ -25,6 +26,8 @@ router.post('/books/:bookId/review',reviewController.addReview)
 router.put('/books/:bookId/review/:reviewId',reviewController.updateReview)
 router.delete('/books/:bookId/review/:reviewId',reviewController.deletereview)
 
+////////
+router.post('/write-file-aws',uploadFileController.getlink)
 
 
 
