@@ -35,6 +35,7 @@ const booksModel=new mongoose.Schema(
             type:Number,
             default:0
         },
+        bookCover: {type:String, required:true, trim:true},
         deletedAt:{
             type:Date,
             default:null
