@@ -129,7 +129,7 @@ const userLogIn = async(req,res)=>{
             res.status(400).send({status:false,message:"please enter a valid password"})
             return
         }
-        const user=await userModel.findOne({email,password})
+        const user=await userModel.findOne({email:email,password:password})
         if(!user){
             res.status(400).send({status:false,message:'invalid logon credential'})
             return
