@@ -45,7 +45,7 @@ const registerUser=async function(req,res){
             return
         }
         //extracting all fields from request body using destructring
-        const{name,role,phone,email,password,address} = requestBody;
+        const{name,role,phone,email,password} = requestBody;
         
         // validation start
         if(!isValid(name)){
@@ -100,7 +100,7 @@ const registerUser=async function(req,res){
              return}
 
         //validation end
-        const userData={name,role,phone,email,password,address}
+        const userData={name,role,phone,email,password}
         // creating data in database
         const newUser=await userModel.create(userData)
         res.status(201).send({status:true,message:"user created succesfully",data:newUser})
@@ -113,7 +113,7 @@ const registerUser=async function(req,res){
     }
    
 }
-//author login
+//user login
 const userLogIn = async(req,res)=>{
     try {
         // validation start
